@@ -44,6 +44,7 @@ return (
     `,
   }}
 />
+  <meta name="yandex-verification" content="696494f6bf82a476" />
       </head>
       <body className="font-sans antialiased">
         {children}
