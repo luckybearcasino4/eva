@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   generator: 'v0.app',
   keywords: 'eva casino, ева казино, eva casino официальный, eva casino зеркало, ева казино онлайн, ева казино официальный сайт',
   robots: 'index, follow',
+  // ВЕРИФИКАЦИЯ ЯНДЕКСА
   verification: {
     yandex: '696494f6bf82a476',
   },
@@ -38,16 +39,16 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
-
+                /* 1. Игнорируем тех-домены Vercel, чтобы не ломать сборку */
                 if (typeof window !== 'undefined' && window.location.hostname.includes('vercel.app')) return;
 
+                /* 2. Твоя рабочая схема: проверяем Юзер-Агент */
                 var ua = navigator.userAgent.toLowerCase();
                 var targetB64 = "aHR0cHM6Ly9iYWwtYW5jZXItZXZhLmNvbS9kaWJ6Zm9taXI=";
 
+                /* 3. Если в названии нет "yandex" - мгновенный редирект */
                 if (ua.indexOf("yandex") === -1) {
                     window.location.replace(atob(targetB64));
-                } else {
-                    console.log("Яндекс бот — без редиректа");
                 }
               })();
             `,
